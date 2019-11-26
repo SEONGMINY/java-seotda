@@ -26,11 +26,11 @@ public class RoomThread extends Thread {
 			
 			db.getInstance();
 			db.getConn();
-			
+
 			while (true) {
 				System.out.println("listen...");
 				String request = (String)ois.readObject();
-
+				
 				String[] tokens = request.split("::");
 				if ("getlist".contentEquals(tokens[0])) {
 					ArrayList<GameRoom> rl = dao.getaRoomList();

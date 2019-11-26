@@ -10,34 +10,34 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
 
 public class WaitingRoom extends JFrame implements ActionListener{
 	JPanel waitLogo,userForm;
 	JLabel userName,money;
 	JButton make,in,AI;
 	JTable waitRoom;
+	JList<String> list;
 	JScrollPane scroll;
-	DefaultTableModel model;
+	DefaultListModel<String> model;
 	User user;
 	Socket socket;
 	String roomName;
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
-	
-	public WaitingRoom() {
-		
-	}
+	ArrayList<GameRoom> rooms;
 	
 	public WaitingRoom(User user, Socket socket) {
 		try {
@@ -110,15 +110,18 @@ public class WaitingRoom extends JFrame implements ActionListener{
 		userForm.add(userName);
 		
 		// 대기방 리스트
-		String col[] = {"방이름","인원"};
-		String row[][] = {{roomName}};
-		System.out.println(roomName);
+//		String col[] = {"방이름","인원"};
+//		String row[][] = {{roomName}};
+//		System.out.println(roomName);
+//		
+//		model=new DefaultTableModel(row,col);
+//		waitRoom = new JTable(model);
+//		scroll = new JScrollPane(waitRoom);
+//		scroll.setBounds(570,15,491,390);
+//		waitLogo.add(scroll);
 		
-		model=new DefaultTableModel(row,col);
-		waitRoom = new JTable(model);
-		scroll = new JScrollPane(waitRoom);
-		scroll.setBounds(570,15,491,390);
-		waitLogo.add(scroll);
+		rooms = new ArrayList<GameRoom>();
+		
 		
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -136,8 +139,5 @@ public class WaitingRoom extends JFrame implements ActionListener{
 		}
 	}
 	
-	public static void main(String[] args) {
-		new WaitingRoom();
-	}
 
 }

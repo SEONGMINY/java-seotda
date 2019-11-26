@@ -37,7 +37,7 @@ class Title extends JFrame implements KeyListener,ActionListener {
 	ObjectInputStream ois;
 	
 	private static final String SERVER_IP = "192.168.0.8";
-	private static final int SERVER_PORT = 8888;
+	private static final int SERVER_PORT = 7777;
 	
 	public Title() {
 		try {
