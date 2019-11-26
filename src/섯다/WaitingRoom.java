@@ -3,6 +3,7 @@ package 섯다;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.ScrollPane;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
@@ -30,7 +30,6 @@ public class WaitingRoom extends JFrame implements ActionListener{
 	JButton make,in,AI;
 	JTable waitRoom;
 	JList<String> list;
-	JScrollPane scroll;
 	DefaultListModel<String> model;
 	User user;
 	Socket socket;
@@ -121,12 +120,43 @@ public class WaitingRoom extends JFrame implements ActionListener{
 //		waitLogo.add(scroll);
 		
 		rooms = new ArrayList<GameRoom>();
-		
-		
+		model = new DefaultListModel<>();
+		ScrollPane scroll = new ScrollPane();
+		scroll.setBounds(570, 15, 491, 390);
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
+		list = new JList<String>(model);
 		
+		refresh();
+	}
+	
+	public void refresh() {
+		try {
+			String request = "getlist::";
+			oos.writeObject(request);
+			rooms = (ArrayList<GameRoom>) ois.readObject();
+			model.clear();
+			
+			for(GameRoom r : rooms) {
+				model.addElement(r.getrName());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createRoom(String rName) {
+		try {
+			String request = "create::" + rName;
+			oos.writeObject(request);
+			new Play();
+			dispose();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -136,6 +166,7 @@ public class WaitingRoom extends JFrame implements ActionListener{
 			dispose();
 		} else if (e.getSource()==make) {
 			roomName = JOptionPane.showInputDialog(null, "생성할 방 제목을 입력하세요 ","방 생성",JOptionPane.DEFAULT_OPTION);
+			createRoom(roomName);
 		}
 	}
 	
