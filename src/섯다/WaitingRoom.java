@@ -7,6 +7,8 @@ import java.awt.ScrollPane;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -109,27 +111,57 @@ public class WaitingRoom extends JFrame implements ActionListener{
 		userForm.add(userName);
 		
 		// 대기방 리스트
-//		String col[] = {"방이름","인원"};
-//		String row[][] = {{roomName}};
-//		System.out.println(roomName);
-//		
-//		model=new DefaultTableModel(row,col);
-//		waitRoom = new JTable(model);
-//		scroll = new JScrollPane(waitRoom);
-//		scroll.setBounds(570,15,491,390);
-//		waitLogo.add(scroll);
-		
 		rooms = new ArrayList<GameRoom>();
+		
 		model = new DefaultListModel<>();
 		ScrollPane scroll = new ScrollPane();
 		scroll.setBounds(570, 15, 491, 390);
+		refresh();
+		list = new JList<String>(model);
+		list.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getClickCount() == 2) {
+					int index = list.getSelectedIndex();
+					int seq = rooms.get(index).getSeq();
+					enterRoom(seq);
+				}
+			}
+		});
+		
+		scroll.add(list);
 		waitLogo.add(scroll);
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
-		list = new JList<String>(model);
 		
-		refresh();
+		
 	}
 	
 	public void refresh() {
@@ -153,18 +185,42 @@ public class WaitingRoom extends JFrame implements ActionListener{
 			String request = "create::" + rName;
 			oos.writeObject(request);
 //			new Play();
-//			dispose();
+			dispose();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public void enterRoom(int seq) {
+		int result = 0;
+		try {
+			String request = "enter::"+seq;
+			oos.writeObject(request);
+			result = (Integer) ois.readObject();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(result == 0) {
+			new Play();
+		} else if(result == 1) {
+			JOptionPane.showMessageDialog(null, "인원수가 초과 했습니다.");
+			refresh();
+		} else {
+			JOptionPane.showMessageDialog(null, "방이 존재하지 않습니다.");
+			refresh();
 		}
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource()==AI) {
-			new Play();
-			dispose();
+			refresh();
 		} else if (e.getSource()==make) {
 			roomName = JOptionPane.showInputDialog(null, "생성할 방 제목을 입력하세요 ","방 생성",JOptionPane.DEFAULT_OPTION);
 			createRoom(roomName);

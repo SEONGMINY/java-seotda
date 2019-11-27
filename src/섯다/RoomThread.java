@@ -36,8 +36,8 @@ public class RoomThread extends Thread {
 					user.setGameRoom(dao.createRoom(user, tokens[1], socket));
 					System.out.println("room has been created");
 					System.out.println("number of rooms : " + dao.getRoomlist().size());
-					new GameThread(socket,user).start();
-					break;
+//					new GameThread(socket,user).start();
+//					break;
 				} else if ("enter".contentEquals(tokens[0])) {
 					int result = dao.enterRoom(user, Integer.parseInt(tokens[1]), socket);
 					if (result == 0) {
@@ -46,7 +46,7 @@ public class RoomThread extends Thread {
 								user.setGameRoom(gr);
 								if (gr.getUsers().size() > 1)
 									gr.setStart(true);
-								new GameThread(socket,user).start();
+//								new GameThread(socket,user).start();
 							}
 						}
 					}

@@ -135,9 +135,11 @@ class Title extends JFrame implements KeyListener,ActionListener {
     		char[] pass=pw.getPassword();
             String password = new String(pass,0,pass.length);
             
+            // 보내기
             String request = "login::" + id+"::"+password;
             oos.writeObject(request);
             
+            // 값 받아오기
 			int result = (int)ois.readObject();
 			
 			if(result == 1) {
@@ -154,28 +156,6 @@ class Title extends JFrame implements KeyListener,ActionListener {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        
-//		if(ck==1) {
-//			User user = new User();
-//			user.setUserid(id);
-//			user.setMoney(money);
-//			try {
-//				//재람이형 꺼
-//				String request = "login::" + id + "::" + password;
-//				oos.writeObject(request);		
-//				
-//				user = (User) ois.readObject();
-//				new WaitingRoom(user,socket);
-//				dispose();
-//				
-//			} catch (ClassNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}	
 	}
 	
 	public void Join() {

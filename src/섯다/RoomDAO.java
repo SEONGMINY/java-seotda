@@ -48,7 +48,7 @@ public class RoomDAO {
 				} else { // 입장 성공
 					gr.addUser(user);
 					userList.put(user.getUserId(), socket);
-
+					
 					return 0;
 				}
 			}
