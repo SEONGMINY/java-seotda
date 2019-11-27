@@ -123,6 +123,7 @@ public class WaitingRoom extends JFrame implements ActionListener{
 		model = new DefaultListModel<>();
 		ScrollPane scroll = new ScrollPane();
 		scroll.setBounds(570, 15, 491, 390);
+		waitLogo.add(scroll);
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
@@ -151,8 +152,8 @@ public class WaitingRoom extends JFrame implements ActionListener{
 		try {
 			String request = "create::" + rName;
 			oos.writeObject(request);
-			new Play();
-			dispose();
+//			new Play();
+//			dispose();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

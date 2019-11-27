@@ -11,7 +11,7 @@ import logon.LogonDBBean;
 
 public class LoginThread extends Thread {
 	private Socket socket=null;
-	LogonDBBean db;
+	LogonDBBean db = LogonDBBean.getInstance();
 	User user;
 	public LoginThread(Socket socket) {
 		this.socket = socket;
@@ -31,12 +31,11 @@ public class LoginThread extends Thread {
 				}
 				String[] tokens = request.split("::");
 				if ("login".contentEquals(tokens[0])) {
-					db.getInstance();
-					db.getConn();
 					int result = db.Login(tokens[1], tokens[2]);
 					if (result == 1) {
 						user = db.getUser(tokens[1]);
 						oos.writeObject(result);
+						System.out.println("아이디:"+user.getUserId());
 						oos.writeObject(user);
 						new RoomThread(user,socket).start();
 						break;

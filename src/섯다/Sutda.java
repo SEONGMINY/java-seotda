@@ -36,7 +36,7 @@ class Title extends JFrame implements KeyListener,ActionListener {
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
 	
-	private static final String SERVER_IP = "192.168.0.8";
+	private static final String SERVER_IP = "39.127.8.189";
 	private static final int SERVER_PORT = 7777;
 	
 	public Title() {
@@ -139,10 +139,10 @@ class Title extends JFrame implements KeyListener,ActionListener {
             oos.writeObject(request);
             
 			int result = (int)ois.readObject();
-			System.out.println(result);
 			
 			if(result == 1) {
 				user = (User)ois.readObject();
+				System.out.println("아이디:"+user.getUserId());
 				dispose();
 				new WaitingRoom(user, socket);
 			}

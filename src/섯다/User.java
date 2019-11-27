@@ -1,6 +1,8 @@
 package 섯다;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
 	String userId;
 	String money;
 	GameRoom gameRoom;

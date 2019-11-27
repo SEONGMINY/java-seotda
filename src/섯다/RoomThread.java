@@ -6,12 +6,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-import logon.LogonDBBean;
-
 public class RoomThread extends Thread {
 	private Socket socket;
 	private User user;
-	LogonDBBean db;
+	RoomDAO dao = RoomDAO.getInstance();
 	
 	public RoomThread(User user, Socket socket) {
 		this.socket = socket;
@@ -23,9 +21,6 @@ public class RoomThread extends Thread {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-			
-			db.getInstance();
-			db.getConn();
 
 			while (true) {
 				System.out.println("listen...");
@@ -38,7 +33,7 @@ public class RoomThread extends Thread {
 					oos.writeObject(rl);
 					System.out.println("loading room list");
 				} else if ("create".contentEquals(tokens[0])) {
-					user.setGr(dao.createRoom(user, tokens[1], socket));
+					user.setGameRoom(dao.createRoom(user, tokens[1], socket));
 					System.out.println("room has been created");
 					System.out.println("number of rooms : " + dao.getRoomlist().size());
 					new GameThread(socket,user).start();

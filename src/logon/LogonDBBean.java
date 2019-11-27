@@ -23,6 +23,10 @@ public class LogonDBBean {
 		return instance;
 	}
 	
+	private LogonDBBean() {
+		
+	}
+	
 	public Connection getConn()  {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -162,9 +166,10 @@ public class LogonDBBean {
 	
 	//회원 정보 가져오기
 	public User getUser(String id) {
+		conn = getConn();
 		User user=null;
 		StringBuffer sql = new StringBuffer();
-		sql.append("select * from USERS where id=?");
+		sql.append("select * from USERS where USERID=?");
 		try {
 			user = new User();
 			pstmt = conn.prepareStatement(sql.toString());
