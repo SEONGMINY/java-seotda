@@ -11,7 +11,7 @@ public class GameRoom implements Serializable{
 	private String rName;
 	private ArrayList<User> users= new ArrayList<>();
 	private boolean isStart = false;
-	private Map<String, int[]> score = Collections.synchronizedMap(new HashMap<String, int[]>());
+	private Map<String, int[]> batting = Collections.synchronizedMap(new HashMap<String, int[]>());
 	private int[] roll = new int[5];
 	private int turn;
 	
@@ -21,9 +21,9 @@ public class GameRoom implements Serializable{
 		this.rName=rName;
 	}
 	public void gameStart() {
-		turn =0;
-		score.put(users.get(0).getUserId(), new int[13]);
-		score.put(users.get(1).getUserId(), new int[13]);
+		turn = 0;
+		batting.put(users.get(0).getUserId(), new int[13]);
+		batting.put(users.get(1).getUserId(), new int[13]);
 	}
 	public int getSeq() {
 		return seq;
@@ -55,11 +55,11 @@ public class GameRoom implements Serializable{
 	public void setStart(boolean isStart) {
 		this.isStart = isStart;
 	}
-	public Map<String, int[]> getScore() {
-		return score;
+	public Map<String, int[]> getBatting() {
+		return batting;
 	}
-	public void setScore(Map<String, int[]> score) {
-		this.score = score;
+	public void setBatting(Map<String, int[]> batting) {
+		this.batting = batting;
 	}
 	public int getTurn() {
 		return turn;
@@ -73,4 +73,30 @@ public class GameRoom implements Serializable{
 	public void setRoll(int[] roll) {
 		this.roll = roll;
 	}
+//	public int getUserScore(int index) {
+//		int sum = 0;
+//		int[] userscore = batting.get(users.get(index).getUserId());
+//		for (int i = 0; i < userscore.length; i++) {
+//			sum += userscore[i];
+//		}
+//		return sum;
+//	}
+	public int getWinner() {
+		int[] scores = new int[2];
+		for(int i = 0; i<2; i++) {
+			int[] userscore = batting.get(users.get(i).getUserId());
+			for(int j=0;j<userscore.length;j++) {
+				scores[i] += userscore[j];
+			}
+		}
+		
+		if(scores[0]>=scores[1]) {
+			return 0;
+		} else if(scores[0]>=scores[1]) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+	
 }

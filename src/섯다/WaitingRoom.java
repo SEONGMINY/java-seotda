@@ -184,7 +184,7 @@ public class WaitingRoom extends JFrame implements ActionListener{
 		try {
 			String request = "create::" + rName;
 			oos.writeObject(request);
-//			new Play();
+			new Play(user,socket);
 			dispose();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -198,6 +198,7 @@ public class WaitingRoom extends JFrame implements ActionListener{
 			String request = "enter::"+seq;
 			oos.writeObject(request);
 			result = (Integer) ois.readObject();
+			dispose();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -207,7 +208,7 @@ public class WaitingRoom extends JFrame implements ActionListener{
 		}
 		
 		if(result == 0) {
-			new Play();
+			new Play(user,socket);
 		} else if(result == 1) {
 			JOptionPane.showMessageDialog(null, "인원수가 초과 했습니다.");
 			refresh();

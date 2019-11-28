@@ -1,23 +1,23 @@
 package 섯다;
 
 public class Combine {
-	int arr[] = new int[4];
+	int cardValue[] = new int[4];
 	int jockbo1,jockbo2;
 	
 	public Combine(){
 		for(int i=0;i<4;i++) { //카드 패 값
-			arr[i] = (int)(Math.random()*20)+1;
+			cardValue[i] = (int)(Math.random()*20)+1;
 			for(int j=0;j<i;j++) {
-				if(arr[j]==arr[i]) {
+				if(cardValue[j]==cardValue[i]) {
 					i--;
 				}
 			}
 		}
 		
-		int pro1 = arr[0] > arr[1] ? arr[0]:arr[1]; // 큰수
-		int pro2 = arr[2] > arr[3] ? arr[2]:arr[3]; // 큰수
-		int pre1 = arr[0] < arr[1] ? arr[0]:arr[1]; // 작은수
-		int pre2 = arr[2] < arr[3] ? arr[2]:arr[3]; // 작은수
+		int pro1 = cardValue[0] > cardValue[1] ? cardValue[0]:cardValue[1]; // 큰수
+		int pro2 = cardValue[2] > cardValue[3] ? cardValue[2]:cardValue[3]; // 큰수
+		int pre1 = cardValue[0] < cardValue[1] ? cardValue[0]:cardValue[1]; // 작은수
+		int pre2 = cardValue[2] < cardValue[3] ? cardValue[2]:cardValue[3]; // 작은수
 		
 		// 족보 Player1
 		if(pre1==5&&pro1==15) {
