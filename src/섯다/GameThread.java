@@ -54,7 +54,7 @@ public class GameThread extends Thread {
 							getTurn();
 							System.out.println("여기1:"+users[0]);
 							break;
-//							+card.cardValue[0]+"::"+card.cardValue[1]+"::"+card.cardValue[2]+"::"+card.cardValue[3]
+							
 						}
 					}
 				} else if ("turnEnd".contentEquals(tokens[0])) {
@@ -66,7 +66,7 @@ public class GameThread extends Thread {
 					user = db.getUser(user.getUserId());
 					oos.writeObject(user);
 					break;
-				} else if ("firstBatting".contentEquals(tokens[0])) {
+				} else if ("check".contentEquals(tokens[3])||"bing".contentEquals(tokens[3])) {
 					dao.broadcast(gr, "first::");
 				}
 			}
@@ -95,10 +95,22 @@ public class GameThread extends Thread {
 		int t_user = turn % 2;
 		System.out.println("몇번째턴:"+turn+"인덱스가 누구:"+t_user+"이넘 누구:"+users[0]);
 		String response = "";
-		if (turn == 100) {
-			response = "gameSet::" + users[t_user];
+		if (turn==0) {
+			response = "isYourTurn::" + users[t_user];
 			dao.broadcast(gr, response);
-		} else {
+			firstCard();
+		}
+		else if (turn == 2) {
+			response = "isYourTurn::" + users[t_user];
+			dao.broadcast(gr, response);
+			openCard();
+		}
+		else if(turn == 4) {
+			response = "isYourTurn::" + users[t_user];
+			dao.broadcast(gr, response);
+			lastOpen();
+		}
+		else {
 			response = "isYourTurn::" + users[t_user];
 			dao.broadcast(gr, response);
 		}
@@ -107,10 +119,39 @@ public class GameThread extends Thread {
 //	public void getHand() {
 //		String
 //	}
+	public void firstCard() {
+		int turn = gr.getTurn();
+		int t_user = turn % 2;
+		String response = "firstCard::"+users[t_user]+"::"+card.cardValue[0]+"::"+card.cardValue[1]+"::"+card.cardValue[2]+"::"+card.cardValue[3];
+		dao.broadcast(gr, response);
+	}
+	
+	public void openCard() {
+		int turn = gr.getTurn();
+		int t_user = turn % 2;
+		String response = "openCard::"+users[t_user]+"::"+card.cardValue[0]+"::"+card.cardValue[1]+"::"+card.cardValue[2]+"::"+card.cardValue[3];
+		dao.broadcast(gr, response);
+	}
+	
+	public void lastOpen() {
+		int turn = gr.getTurn();
+		int t_user = turn % 2;
+		String response = "lastOpen::"+users[t_user]+"::"+card.cardValue[0]+"::"+card.cardValue[1]+"::"+card.cardValue[2]+"::"+card.cardValue[3];
+		dao.broadcast(gr, response);
+		result();
+	}
 	
 	public void setBatting(int batting) {
 		Map<String, int[]> pre = gr.getBatting();
 		gr.setBatting(pre);
+	}
+	
+	public void result() {
+		int turn = gr.getTurn();
+		int t_user = turn % 2;
+		String response = "result::"+users[t_user]+"::"+card.jockbo1+"::"+card.jockbo2;
+		dao.broadcast(gr, response);
+		
 	}
 	
 

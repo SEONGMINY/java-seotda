@@ -38,11 +38,13 @@ public class Play extends JFrame implements Runnable,ActionListener {
 		try {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
+			
+			String request = "isStart::";
+			oos.writeObject(request);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		
 		setTitle("섯다");
 		setSize(900,900);
@@ -135,10 +137,7 @@ public class Play extends JFrame implements Runnable,ActionListener {
 					String response = (String) ois.readObject();
 					String[] tokens = response.split("::");
 					
-					if ("start".contentEquals(tokens[0])) {
-//						JOptionPane.showMessageDialog(null, "게임 시작.");
-					
-						
+					if ("start".contentEquals(tokens[0])) {						
 						// 카드 움직임
 						int ck=0;
 						while(true) {					
@@ -156,9 +155,6 @@ public class Play extends JFrame implements Runnable,ActionListener {
 								x3 = x3-1;
 								if(y3>600) {
 									ck++;
-//									JOptionPane.showMessageDialog(null, "배팅 해주세요.");
-//									String request = "firstBatting";
-//									oos.writeObject(request);
 								}
 							} else if(ck==2) {
 								card2.setBounds(x2,y2,97,117);
@@ -176,11 +172,7 @@ public class Play extends JFrame implements Runnable,ActionListener {
 								}
 							}
 						}
-					} else if ("first".contentEquals(tokens[0])) {
-						bing.setEnabled(false);
-						check.setEnabled(false);
-					} else if("isYourTurn".contentEquals(tokens[0])) {
-						System.out.println(user.getUserId()+"/"+tokens[1]);
+					} else if("isYourTurn".contentEquals(tokens[0])) {						
 						if (user.getUserId().contentEquals(tokens[1])) {
 							half.setEnabled(true);
 							call.setEnabled(true);
@@ -192,7 +184,44 @@ public class Play extends JFrame implements Runnable,ActionListener {
 							check.setEnabled(false);
 							bing.setEnabled(false);
 						}
-					} else {
+					} else if("openCard".contentEquals(tokens[0])) {
+						if(user.getUserId().contentEquals(tokens[1])) {
+							card1.setIcon(new ImageIcon("img/"+tokens[2]+".jpg"));
+//							card3.setIcon(new ImageIcon("img/"+tokens[4]+".jpg"));
+						} else {
+							card1.setIcon(new ImageIcon("img/"+tokens[4]+".jpg"));
+//							card3.setIcon(new ImageIcon("img/"+tokens[2]+".jpg"));
+						}						
+					} else if("firstCard".contentEquals(tokens[0])) {
+						if(user.getUserId().contentEquals(tokens[1])) {
+							card3.setIcon(new ImageIcon("img/"+tokens[4]+".jpg"));
+						} else {
+							card3.setIcon(new ImageIcon("img/"+tokens[2]+".jpg"));
+						}
+					} else if("lastOpen".contentEquals(tokens[0])) {
+						if(user.getUserId().contentEquals(tokens[1])) {
+							card2.setIcon(new ImageIcon("img/"+tokens[3]+".jpg"));
+							card4.setIcon(new ImageIcon("img/"+tokens[5]+".jpg"));
+						} else {
+							card2.setIcon(new ImageIcon("img/"+tokens[5]+".jpg"));
+							card4.setIcon(new ImageIcon("img/"+tokens[3]+".jpg"));
+						}
+					} else if ("result".contentEquals(tokens[0])) {
+						if(user.getUserId().contentEquals(tokens[1])) {
+							if(Integer.parseInt(tokens[2])<Integer.parseInt(tokens[2])) {
+								JOptionPane.showMessageDialog(null, "승리하셨습니다");
+							} else {
+								JOptionPane.showMessageDialog(null, "패배하셨습니다");
+							}
+						} else {
+							if(Integer.parseInt(tokens[2])>Integer.parseInt(tokens[2])) {
+								JOptionPane.showMessageDialog(null, "승리하셨습니다");
+							} else {
+								JOptionPane.showMessageDialog(null, "패배하셨습니다");
+							}
+						}
+					}
+					else {
 						break;
 					}
 				} catch (ClassNotFoundException e) {
@@ -207,16 +236,16 @@ public class Play extends JFrame implements Runnable,ActionListener {
 			}
 			
 			// 오픈할 카드 선택 
-			ImageIcon[] choosecards = {new ImageIcon("img/"+card.cardValue[2]+".jpg"), new ImageIcon("img/"+card.cardValue[3]+".jpg")};
-			chooseCard = JOptionPane.showOptionDialog(null, "오픈할를 카드선택 해주세요", "카드 선택", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choosecards, "");
+//			ImageIcon[] choosecards = {new ImageIcon("img/"+card.cardValue[2]+".jpg"), new ImageIcon("img/"+card.cardValue[3]+".jpg")};
+//			chooseCard = JOptionPane.showOptionDialog(null, "오픈할를 카드선택 해주세요", "카드 선택", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choosecards, "");
 			
-			if(chooseCard==0) {
-				card3.setIcon(new ImageIcon("img/"+card.cardValue[2]+".jpg"));
-//				card1.setIcon(new ImageIcon("img/"+card.cardValue[0]+".jpg"));
-			} else if(chooseCard==1) {
-				card4.setIcon(new ImageIcon("img/"+card.cardValue[3]+".jpg"));
-//				card1.setIcon(new ImageIcon("img/"+card.cardValue[0]+".jpg"));
-			}
+//			if(chooseCard==0) {
+//				card3.setIcon(new ImageIcon("img/"+card.cardValue[2]+".jpg"));
+////				card1.setIcon(new ImageIcon("img/"+card.cardValue[0]+".jpg"));
+//			} else if(chooseCard==1) {
+//				card4.setIcon(new ImageIcon("img/"+card.cardValue[3]+".jpg"));
+////				card1.setIcon(new ImageIcon("img/"+card.cardValue[0]+".jpg"));
+//			}
 			
 			
 			
@@ -230,13 +259,7 @@ public class Play extends JFrame implements Runnable,ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// 쓰레드 실행
 		if(e.getSource()==cardAll) {
-			try {
-				String request = "isStart::";
-				oos.writeObject(request);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+
 		}
 		
 		// 배팅 - 콜 하프 체크 삥
@@ -306,11 +329,11 @@ public class Play extends JFrame implements Runnable,ActionListener {
 //			card4.setIcon(new ImageIcon("img/"+card.cardValue[3]+".jpg"));
 //		}
 		
-		if(e.getSource()==card3) {
-			card3.setIcon(new ImageIcon("img/"+card.cardValue[2]+".jpg"));
-		} else if(e.getSource()==card4) {
-			card4.setIcon(new ImageIcon("img/"+card.cardValue[3]+".jpg"));
-		}
+//		if(e.getSource()==card3) {
+//			card3.setIcon(new ImageIcon("img/"+card.cardValue[2]+".jpg"));
+//		} else if(e.getSource()==card4) {
+//			card4.setIcon(new ImageIcon("img/"+card.cardValue[3]+".jpg"));
+//		}
 		
 		
 	}	
