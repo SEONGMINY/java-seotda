@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import logon.LogonDBBean;
+
 public class Play extends JFrame implements Runnable,ActionListener {
 	JPanel GameImg;
 	JTextField myMoney,battingMoney;
@@ -29,6 +31,7 @@ public class Play extends JFrame implements Runnable,ActionListener {
 	Socket socket;
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
+	LogonDBBean db = LogonDBBean.getInstance();
 	
 	Combine card = new Combine();
 	
@@ -101,7 +104,7 @@ public class Play extends JFrame implements Runnable,ActionListener {
 		card4.addActionListener(this);
 		
 		//보유 금액, 배팅 금액
-		battingMoney = new JTextField("배팅금액: "+user.getMoney());
+		battingMoney = new JTextField("배팅금액: "+batting);
 		battingMoney.setBorder(null);
 		battingMoney.setHorizontalAlignment(SwingConstants.RIGHT);
 		battingMoney.setBounds(330,490,196,30);
@@ -126,6 +129,13 @@ public class Play extends JFrame implements Runnable,ActionListener {
 		getContentPane().add(GameImg);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
+	}
+	public void winner() {
+		JOptionPane.showMessageDialog(null, "승리하셨습니다");
+		
+	}
+	public void loser() {
+		JOptionPane.showMessageDialog(null, "패배하셨습니다");
 	}
 
 	@Override
@@ -208,18 +218,29 @@ public class Play extends JFrame implements Runnable,ActionListener {
 						}
 					} else if ("result".contentEquals(tokens[0])) {
 						if(user.getUserId().contentEquals(tokens[1])) {
-							if(Integer.parseInt(tokens[2])<Integer.parseInt(tokens[2])) {
-								JOptionPane.showMessageDialog(null, "승리하셨습니다");
+							if(Integer.parseInt(tokens[3])>Integer.parseInt(tokens[2])) {
+								winner();
+								System.out.println(tokens[1]);
+//								db.Winner(tokens[1], batting);
 							} else {
-								JOptionPane.showMessageDialog(null, "패배하셨습니다");
+								loser();
+								System.out.println(tokens[1]);
+//								db.Loser(tokens[1], batting);
 							}
 						} else {
-							if(Integer.parseInt(tokens[2])>Integer.parseInt(tokens[2])) {
-								JOptionPane.showMessageDialog(null, "승리하셨습니다");
+							if(Integer.parseInt(tokens[3])>Integer.parseInt(tokens[2])) {
+								loser();
+								System.out.println(tokens[1]);
+//								db.Loser(tokens[1], batting);
 							} else {
-								JOptionPane.showMessageDialog(null, "패배하셨습니다");
+								System.out.println(tokens[1]);
+								winner();
+//								db.Winner(tokens[1], batting);
 							}
 						}
+					} else if ("batting".contentEquals(tokens[0])) {
+						battingMoney.setText("배팅금액: "+tokens[1]);
+						batting = Integer.parseInt(tokens[1]);
 					}
 					else {
 						break;
@@ -233,21 +254,7 @@ public class Play extends JFrame implements Runnable,ActionListener {
 				}
 				
 				
-			}
-			
-			// 오픈할 카드 선택 
-//			ImageIcon[] choosecards = {new ImageIcon("img/"+card.cardValue[2]+".jpg"), new ImageIcon("img/"+card.cardValue[3]+".jpg")};
-//			chooseCard = JOptionPane.showOptionDialog(null, "오픈할를 카드선택 해주세요", "카드 선택", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choosecards, "");
-			
-//			if(chooseCard==0) {
-//				card3.setIcon(new ImageIcon("img/"+card.cardValue[2]+".jpg"));
-////				card1.setIcon(new ImageIcon("img/"+card.cardValue[0]+".jpg"));
-//			} else if(chooseCard==1) {
-//				card4.setIcon(new ImageIcon("img/"+card.cardValue[3]+".jpg"));
-////				card1.setIcon(new ImageIcon("img/"+card.cardValue[0]+".jpg"));
-//			}
-			
-			
+			}			
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -258,15 +265,11 @@ public class Play extends JFrame implements Runnable,ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// 쓰레드 실행
-		if(e.getSource()==cardAll) {
-
-		}
 		
 		// 배팅 - 콜 하프 체크 삥
 		if(e.getSource()==call) {
 			try {
-				click = 1;
-				String request = "turnEnd::"+batting;
+				String request = "turnEnd::call";
 				oos.writeObject(request);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -274,19 +277,15 @@ public class Play extends JFrame implements Runnable,ActionListener {
 			}
 		} else if(e.getSource()==half) {
 			try {
-				click = 1;
-				batting = batting + (batting/2);
-				String request = "turnEnd::"+batting;
+				String request = "turnEnd::half";
 				oos.writeObject(request);
-				battingMoney.setText("배팅금액: "+batting);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		} else if(e.getSource()==check) {
 			try {
-				click = 1;
-				String request = "turnEnd::"+batting+"::"+"check";
+				String request = "turnEnd::check";
 				oos.writeObject(request);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -294,16 +293,14 @@ public class Play extends JFrame implements Runnable,ActionListener {
 			} 
 		} else if(e.getSource()==bing) {
 			try {
-				click = 1;
-				batting = batting+10000;
-				battingMoney.setText("배팅금액: "+batting);
-				String request = "turnEnd::"+batting+"::"+"bing";
+				String request = "turnEnd::bing";
 				oos.writeObject(request);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
+		
 		
 		// 배팅 -다이
 		if(e.getSource()==die) {
@@ -316,25 +313,7 @@ public class Play extends JFrame implements Runnable,ActionListener {
 				dispose();
 //				new WaitingRoom();
 			}
-		}
-		
-		// 카드 오픈
-//		if (e.getSource()==card1) {
-//			card1.setIcon(new ImageIcon("img/"+card.cardValue[0]+".jpg"));
-//		} else if (e.getSource()==card2) {
-//			card2.setIcon(new ImageIcon("img/"+card.cardValue[1]+".jpg"));
-//		} else if(e.getSource()==card3) {
-//			card3.setIcon(new ImageIcon("img/"+card.cardValue[2]+".jpg"));
-//		} else if(e.getSource()==card4) {
-//			card4.setIcon(new ImageIcon("img/"+card.cardValue[3]+".jpg"));
-//		}
-		
-//		if(e.getSource()==card3) {
-//			card3.setIcon(new ImageIcon("img/"+card.cardValue[2]+".jpg"));
-//		} else if(e.getSource()==card4) {
-//			card4.setIcon(new ImageIcon("img/"+card.cardValue[3]+".jpg"));
-//		}
-		
+		}		
 		
 	}	
 }

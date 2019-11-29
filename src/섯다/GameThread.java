@@ -15,10 +15,9 @@ public class GameThread extends Thread {
 	private LogonDBBean db;
 	private User user;
 	private GameRoom gr;
-	private int[] rolled = new int[5];
 	private String[] users = new String[2];
-	private int batting;
 	private Combine card = new Combine();
+	private int battingValue = 10000;
 
 	public GameThread(Socket socket, User user) {
 		this.socket = socket;
@@ -52,23 +51,33 @@ public class GameThread extends Thread {
 							}
 							dao.broadcast(gr, "start::" + users[0] + "::" + users[1]);
 							getTurn();
-							System.out.println("여기1:"+users[0]);
 							break;
 							
 						}
 					}
 				} else if ("turnEnd".contentEquals(tokens[0])) {
-					gr.setTurn(gr.getTurn() + 1);	
+					gr.setTurn(gr.getTurn() + 1);
 					getTurn();
-					System.out.println("여기2:"+users[0]);
+					if ("call".contentEquals(tokens[1])) {
+						System.out.println("여긴 콜");
+						call();
+					} else if ("half".contentEquals(tokens[1])) {
+						System.out.println("여긴 하프");
+						half();
+					} else if ("check".contentEquals(tokens[1])) {
+						System.out.println("여긴 체크");
+						check();
+					} else if ("bing".contentEquals(tokens[1])) {
+						System.out.println("여긴 삥");
+						bing();
+					}
+					
 				} else if ("endGame".contentEquals(tokens[0])) {
 					dao.endGame(gr, user);
 					user = db.getUser(user.getUserId());
 					oos.writeObject(user);
 					break;
-				} else if ("check".contentEquals(tokens[3])||"bing".contentEquals(tokens[3])) {
-					dao.broadcast(gr, "first::");
-				}
+				} 
 			}
 		} catch (SocketException e) {
 			System.out.println("[GameThread]lost connection");
@@ -84,7 +93,6 @@ public class GameThread extends Thread {
 		for (GameRoom r : dao.getRoomlist()) {
 			if (r.getSeq() == gr.getSeq()) {
 				gr = r;
-				System.out.println("돼냐?");
 			}
 		}
 		return gr.isStart();
@@ -93,7 +101,6 @@ public class GameThread extends Thread {
 	public void getTurn() {
 		int turn = gr.getTurn();
 		int t_user = turn % 2;
-		System.out.println("몇번째턴:"+turn+"인덱스가 누구:"+t_user+"이넘 누구:"+users[0]);
 		String response = "";
 		if (turn==0) {
 			response = "isYourTurn::" + users[t_user];
@@ -141,23 +148,34 @@ public class GameThread extends Thread {
 		result();
 	}
 	
-	public void setBatting(int batting) {
-		Map<String, int[]> pre = gr.getBatting();
-		gr.setBatting(pre);
-	}
-	
 	public void result() {
 		int turn = gr.getTurn();
 		int t_user = turn % 2;
 		String response = "result::"+users[t_user]+"::"+card.jockbo1+"::"+card.jockbo2;
-		dao.broadcast(gr, response);
-		
+		dao.broadcast(gr, response);	
 	}
 	
-
-//	public void setScore(int type, int score) {
-//		Map<String, int[]> pre = gr.getScore();
-//		pre.get(user.getUserId())[type] = score;
-//		gr.setScore(pre);
-//	}
+	public void call() {
+		battingValue += (int)(battingValue * 1.5);
+		String response = "batting::" + battingValue;
+		dao.broadcast(gr, response);	
+	}
+	
+	public void half() {
+		battingValue += battingValue * 2;
+		String response = "batting::" + battingValue;
+		dao.broadcast(gr, response);	
+	}
+	
+	public void check() {
+		String response = "batting::" + battingValue;
+		dao.broadcast(gr, response);	
+	}
+	
+	public void bing() {
+		battingValue += battingValue + 10000;
+		String response = "batting::" + battingValue;
+		dao.broadcast(gr, response);		
+	}
+	
 }

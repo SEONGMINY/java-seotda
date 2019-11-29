@@ -25,9 +25,8 @@ public class RoomThread extends Thread {
 			while (true) {
 				System.out.println("listen...");
 				String request = (String)ois.readObject();
-				System.out.println("뭐클릭함?: "+request);
-				
 				String[] tokens = request.split("::");
+				
 				if ("getlist".contentEquals(tokens[0])) {
 					ArrayList<GameRoom> rl = dao.getaRoomList();
 					System.out.println(request);

@@ -164,6 +164,72 @@ public class LogonDBBean {
 		}
 	}
 	
+	public void Winner(String id, int batting) {
+		try {
+			conn = getConn();
+			pstmt = conn.prepareStatement("Update USERS set USERMONEY = USERMONEY + ? where USERID = ?");
+			pstmt.setInt(1, batting);
+			pstmt.setString(2, id);
+			pstmt.executeUpdate();
+	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void Loser(String id, int batting) {
+		try {
+			conn = getConn();
+			pstmt = conn.prepareStatement("Update USERS set USERMONEY = USERMONEY - ? where USERID = ?");
+			pstmt.setInt(1, batting);
+			pstmt.setString(2, id);
+			pstmt.executeUpdate();
+	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	//회원 정보 가져오기
 	public User getUser(String id) {
 		conn = getConn();

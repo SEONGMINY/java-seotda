@@ -94,8 +94,8 @@ public class RoomDAO {
 		}
 	}
 	public void endGame(GameRoom gr, User user) {
-		int userIndex=gr.getUsers().indexOf(user);
-		int winner = gr.getWinner();
+//		int userIndex=gr.getUsers().indexOf(user);
+//		int winner = gr.getWinner();
 //		int score = gr.getUserScore(userIndex);
 		
 //		try {

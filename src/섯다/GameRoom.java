@@ -11,19 +11,14 @@ public class GameRoom implements Serializable{
 	private String rName;
 	private ArrayList<User> users= new ArrayList<>();
 	private boolean isStart = false;
-	private Map<String, int[]> batting = Collections.synchronizedMap(new HashMap<String, int[]>());
-	private int[] roll = new int[5];
+//	private Map<String, Integer> batting = Collections.synchronizedMap(new HashMap<String, Integer>());
+	private int batting;
 	private int turn;
 	
 	public GameRoom(User user, int seq, String rName) {
 		users.add(user);
 		this.seq=seq;
 		this.rName=rName;
-	}
-	public void gameStart() {
-		turn = 0;
-		batting.put(users.get(0).getUserId(), new int[13]);
-		batting.put(users.get(1).getUserId(), new int[13]);
 	}
 	public int getSeq() {
 		return seq;
@@ -55,24 +50,19 @@ public class GameRoom implements Serializable{
 	public void setStart(boolean isStart) {
 		this.isStart = isStart;
 	}
-	public Map<String, int[]> getBatting() {
-		return batting;
-	}
-	public void setBatting(Map<String, int[]> batting) {
-		this.batting = batting;
-	}
 	public int getTurn() {
 		return turn;
 	}
 	public void setTurn(int turn) {
 		this.turn = turn;
 	}
-	public int[] getRoll() {
-		return roll;
+	public int getBatting() {
+		return batting;
 	}
-	public void setRoll(int[] roll) {
-		this.roll = roll;
+	public void setBatting(int batting) {
+		this.batting = batting;
 	}
+	
 //	public int getUserScore(int index) {
 //		int sum = 0;
 //		int[] userscore = batting.get(users.get(index).getUserId());
@@ -81,22 +71,23 @@ public class GameRoom implements Serializable{
 //		}
 //		return sum;
 //	}
-	public int getWinner() {
-		int[] scores = new int[2];
-		for(int i = 0; i<2; i++) {
-			int[] userscore = batting.get(users.get(i).getUserId());
-			for(int j=0;j<userscore.length;j++) {
-				scores[i] += userscore[j];
-			}
-		}
-		
-		if(scores[0]>=scores[1]) {
-			return 0;
-		} else if(scores[0]>=scores[1]) {
-			return 1;
-		} else {
-			return -1;
-		}
-	}
+	
+//	public int getWinner() {
+//		int[] scores = new int[2];
+//		for(int i = 0; i<2; i++) {
+//			int[] userscore = batting.get(users.get(i).getUserId());
+//			for(int j=0;j<userscore.length;j++) {
+//				scores[i] += userscore[j];
+//			}
+//		}
+//		
+//		if(scores[0]>=scores[1]) {
+//			return 0;
+//		} else if(scores[0]>=scores[1]) {
+//			return 1;
+//		} else {
+//			return -1;
+//		}
+//	}
 	
 }
